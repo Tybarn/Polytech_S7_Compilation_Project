@@ -1,0 +1,21 @@
+class Couple() is {
+
+    var first:Integer;
+    var scd:Integer;
+
+    def Couple() is {
+        first := 1; scd := 2;
+    }
+
+    def Couple(nbF:Integer, nbS:Integer) is {
+        first := bF;
+        scd := nbS;
+    }
+
+    def print () : String {
+        result := "Bla bla bla";
+    }
+
+}
+
+

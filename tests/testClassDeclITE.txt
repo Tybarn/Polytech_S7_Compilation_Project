@@ -1,0 +1,23 @@
+class Couple() is {
+
+    var first:Integer;
+    var scd:Integer;
+
+    def Couple() is {
+        first := 1; scd := 2;
+    }
+
+    def Couple(nbF:Integer, nbS:Integer) is {
+        if nbF > 2 then {
+            first := nbF;
+        } else { 
+            first := 0;        
+        }
+        if nbS > 3 then {
+            scd := nbS;
+        } else{
+            scd := 0;        
+        }
+    }
+
+}

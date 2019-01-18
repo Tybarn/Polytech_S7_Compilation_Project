@@ -1,0 +1,9 @@
+{
+
+    x:Integer := 4;
+    y := x;
+    x+y;
+
+    return;
+
+}

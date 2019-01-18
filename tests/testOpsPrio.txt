@@ -1,0 +1,7 @@
+{
+
+    x:Integer := 4;
+    y:Integer;
+    y := (x+y)*3;
+
+}

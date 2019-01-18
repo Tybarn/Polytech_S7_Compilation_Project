@@ -1,0 +1,7 @@
+class Couple() is {
+
+    def Couple() is { }
+
+}
+
+

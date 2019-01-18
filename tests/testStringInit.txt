@@ -1,0 +1,6 @@
+{
+    
+    str:String;
+    str := "So in the mood to kill!";
+
+}
