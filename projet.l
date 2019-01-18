@@ -4,7 +4,7 @@ LettreMin [a-z]
 LettreMaj [A-Z]
 Lettre {LettreMin}|{LettreMaj}
 LC {Lettre}|{Chiffre}
-Symbol [();]
+Symbol [():,{};]
 Star \*
 NotStar [^*]
 NotStarSlash [^*/]
@@ -53,6 +53,7 @@ void lexError(char c) {
 
 %%
 {Delim}+ {/* comportement de l'analyseur en fonction de ce qu'il rencontre */ }
+{Chiffre}* {yylval.I = strtol(yytext, NULL, 0); return(CST);}
 {LettreMaj}{LC}*    { yylval.S = strdup(yytext); return(IDCLASS);}
 {LettreMin}{LC}*    { return keywordOrId();}
 ":="    {return(AFFECT);}
