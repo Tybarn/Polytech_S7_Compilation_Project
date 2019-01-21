@@ -64,6 +64,9 @@
 #define Eclass 35
 #define Eaxiome 36
 #define Ereturn 37
+#define ETHIS 38
+#define ESUPER 39
+#define ERESULT 40
 
 typedef int bool;
 

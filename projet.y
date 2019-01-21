@@ -212,9 +212,9 @@ E3 : CST                /*{ $$ = makeLeafInt(CONST, $1);}*/
 	| Message
 ;
 
-Identificateur : THIS
-	| SUPER
-	| RESULT
+Identificateur : THIS   /*{$$ = makeLeafStr(ETHIS, $1);}*/
+	| SUPER             /*{$$ = makeLeafStr(ESUPER, $1);}*/
+	| RESULT            /*{$$ = makeLeafStr(ERESULT, $1);}*/
 ;
 
 
