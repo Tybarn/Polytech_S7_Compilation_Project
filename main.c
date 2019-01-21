@@ -6,6 +6,7 @@
 #include "projet.h"
 #include "projet_y.h"
 #include "projet.h"
+#include "genCode.h"
 
 /* Niveau de 'verbosite'.
  * Par defaut, n'imprime que le resultat et les messages d'erreur

@@ -27,10 +27,16 @@ projet_y.o : projet_y.c
 projet_y.h projet_y.c : projet.y projet.h
 	bison -v -b projet_y -o projet_y.c -d projet.y
 
+genCode.c :
+	echo ''
+
+genCode.o: genCode.c projet.h projet_y.h genCode.h
+	$(CC) $(CFLAGS) -c genCode.c
+
 main.c :
 	echo ''
 
-main.o: main.c projet_y.h projet.h
+main.o: main.c projet_y.h projet.h genCode.h
 	$(CC) $(CFLAGS) -c main.c
 
 .Phony: clean
