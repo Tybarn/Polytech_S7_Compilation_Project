@@ -33,7 +33,7 @@
 #define Ediv	4
 #define ITE	5
 #define ECST	6
-//#define IDVAR 7
+#define EIDVAR	7
 #define NE 	8
 #define EQ 	9
 #define LT 	10
@@ -43,7 +43,7 @@
 #define ELIST	14
 #define EDECL	15
 #define EIDCLASS	16
-#define AFFECT 17 /*a voir si vraiment necessaire*/
+#define AFFECT 17
 #define EAND 18
 #define Ecast 19
 #define Einstan 20
@@ -51,6 +51,18 @@
 #define Eselect 22
 #define Emessage 23
 #define Earg 24
+#define Ebloc 25
+#define Estring 26
+#define Einteger 27
+#define Eobjet 28
+#define EBlocObjet 29
+#define EDeclObjet 30
+#define Eparam 31
+#define Emeth 32
+#define Econstructor 33
+#define Echamp 34
+#define Eclass 35
+#define Eaxiome 36
 
 typedef int bool;
 

@@ -24,7 +24,7 @@
 %{
 /*
 #include "tp.h"  /*le fichier contenant la définition des types etc..*/
-
+#include "projet.h"
 extern int yylex();	/* fournie par Flex */
 extern void yyerror();  /* definie dans tp.c */
 
