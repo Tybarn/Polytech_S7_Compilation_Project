@@ -4,14 +4,14 @@ LettreMin [a-z]
 LettreMaj [A-Z]
 Lettre {LettreMin}|{LettreMaj}
 LC {Lettre}|{Chiffre}
-Symbol [():,{};]
+Symbol [():,{};.]
 Star \*
 NotStar [^*]
 NotStarSlash [^*/]
 
 
 NomClasse {LettreMajLC*}
-Delim [ ]
+Delim [ \n\r\t]
 
 %{
 #include "projet.h"
@@ -56,7 +56,7 @@ void lexError(char c) {
 {Chiffre}* {yylval.I = strtol(yytext, NULL, 0); return(CST);}
 {LettreMaj}{LC}*    { yylval.S = strdup(yytext); return(IDCLASS);}
 {LettreMin}{LC}*    { return keywordOrId();}
-":="    {return(AFFECT);}
+":="    {return(AFF);}
 "+" {return (ADD);}
 "-"     {return (SUB);}
 "*"     {return (MUL);}
