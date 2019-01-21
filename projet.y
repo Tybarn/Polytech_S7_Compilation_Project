@@ -1,4 +1,4 @@
-%token CLASS DEF EXTENDS IS NEW OBJECT THIS VAR
+%token CLASS DEF EXTENDS IS NEW OBJECT STR THIS VAR
 %token OVERRIDE SUPER RESULT RETURN AND
 %token IF THEN ELSE
 %token INTEGER STRING
@@ -23,8 +23,9 @@
 
 %{
 /*
-#include "tp.h"  /*le fichier contenant la définition des types etc..*/
+#include "tp.h"  le fichier contenant la définition des types etc..*/
 #include "projet.h"
+#include <stdio.h>
 extern int yylex();	/* fournie par Flex */
 extern void yyerror();  /* definie dans tp.c */
 
@@ -46,7 +47,7 @@ extern void yyerror();  /* definie dans tp.c */
 
 /* -------------------------- AXIOME -------------------------- */
 
-S : LDeclCOOpt Bloc         /*Ici on aura le genCode()*/
+S : LDeclCOOpt Bloc         /*Ici on aura le genCode()*/ {printf("S\n");}
 ;
 
 /* -------------------------- PARTIE DECLARATION -------------------------- */
@@ -58,7 +59,7 @@ LDeclCOOpt :  DeclClasse LDeclCOOpt /*{$$ = makeTree(EDECL, 2, $1, $2);}*/
 
 /* -------------------------- DECLARATION CLASSE -------------------------- */
 
-DeclClasse : CLASS IDCLASS '(' LParamClasseOpt ')' EXTENDS TypeCO IS BlocDeclClasse /*{$$ = makeTree(Eclass, 4, $2, $4, $7,$9);}*/
+DeclClasse : CLASS IDCLASS '(' LParamClasseOpt ')' EXTENDS IDCLASS IS BlocDeclClasse /*{$$ = makeTree(Eclass, 4, $2, $4, $7,$9);}*/
     | CLASS IDCLASS '(' LParamClasseOpt ')' IS BlocDeclClasse /*{$$ = makeTree(Eclass, 3, $2, $4, $7);}*/
 ;
 
@@ -70,7 +71,7 @@ LParamClasse : ParamClasse ',' LParamClasse     /*{$$ = makeTree(Eparam, 2, $1, 
 	  | ParamClasse                             /*{$$ = $1;}*/
 ;
 
-ParamClasse : VAR IDVAR ':' TypeCO      /*{$$ = makeTree(Eparam, 2, $2, $4);}*/
+ParamClasse : VAR IDVAR ':' IDCLASS      /*{$$ = makeTree(Eparam, 2, $2, $4);}*/
         | Param                         /*{$$ = $1;}*/
 ;
 
@@ -85,7 +86,7 @@ LDeclChamp :  DeclChamp LDeclChamp      /*{$$ = makeTree(Echamp, 2, $1, $2);}*/
 	| DeclChamp                         /*{$$ = $1;}*/
 ;
 
-DeclChamp : VAR IDVAR ':' TypeCO ';'    /*{$$ = makeTree(Echamp, 2, $2, $4);}*/
+DeclChamp : VAR IDVAR ':' IDCLASS ';'    /*{$$ = makeTree(Echamp, 2, $2, $4);}*/
 ;
 
 DefConstructClasse : DEF IDCLASS '(' LParamClasseOpt ')' IS Bloc        /*{$$ = makeTree(Econstructor, 3, $2, $4, $6);}*/
@@ -106,7 +107,7 @@ DefMethode : OVERRIDE DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression    
 	| DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc              /*{$$ = makeTree(Emeth, 4, $2, $4, $6, $8);}*/
 ;
 
-NomClasseOpt:IDCLASS         /*{$$ = makeLeafStr(EIDCLASS, $1);}*/
+NomClasseOpt: ':' IDCLASS         /*{$$ = makeLeafStr(EIDCLASS, $1);}*/
 |                           /*{$$ = NIL(Tree);}*/
 ;
 
@@ -118,7 +119,7 @@ LParam : Param ',' LParam       /* {$$ = makeTree(Eparam, 2, $1, $3);}*/
 		| Param                 /*{$$ = $1;}*/
 ;
 
-Param : IDVAR ':' TypeCO    /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
+Param : IDVAR ':' IDCLASS    /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
 ;
 
 /* -------------------------- DECLARATION OBJECT -------------------------- */
@@ -132,16 +133,9 @@ BlocDeclObject : '{' LDeclChampOpt DefConstructObject LDefMethodeOpt '}'    /*{$
 DefConstructObject : DEF IDCLASS IS Bloc    /*{$$ = makeTree(Eobjet, 2, $2, $4);}*/
 ;
 
-/* -------------------------- AUTRE --------------------------- */
-
-TypeCO : INTEGER    /*{$$ = makeLeafStr(Einteger, $1);} */
-	| STRING        /*{$$ = makeLeafStr(Estring, $1);} */
-	| IDCLASS       /*{$$ = makeLeafStr(EIDCLASS, $1);} */
-;
-
 /* ------------------------- BLOC --------------------------- */ 
 
-Bloc: '{' ContenueBloc '}'      /*{$$ = $1;}*/
+Bloc: '{' ContenueBloc '}'      /*{$$ = $1;}*/ {printf("Bloc\n");}
 ;
 
 ContenueBloc : ListeDecl IS ListeInstr  /*{$$ = makeTree(Ebloc, 2, $1, $3);}*/
@@ -161,8 +155,8 @@ ListeInstr: Instr ListeInstr    /*{$$ = makeTree(Einstruct, 2, $1, $2);}*/
 Instr : Expression ';'      /*{$$ = $1;}*/
     |   Bloc                /*{$$ = $1;}*/
     |   RETURN ';'          /*{$$ = makeLeafStr(Ereturn, $1);}*/
-    |   IDVAR AFF Expression';' /*{$$ = makeTree(AFFECT,2,$1,$3);}*/
-    |   IF Expression THEN '{' ListeInstrOpt '}' ELSE '{' ListeInstrOpt '}' /*{$$ = makeTree(ITE,3,$2,$5,$9);}*/
+    |   Cible AFF Expression';' /*{$$ = makeTree(AFFECT,2,$1,$3);}*/
+    |   IF Expression THEN Instr ELSE Instr  /*{$$ = makeTree(ITE,3,$2,$5,$9);}*/
 ;
 
 /* ------------------------ DECLARATION DANS BLOC ------------------------- */
@@ -187,7 +181,7 @@ Expression : E0 RELOP E0 /*{$$ = makeTree($2, 2, $1, $3);}*/
 	| E0 /*{$$ = $1;}*/
 ;
 
-E0 : E0 '&' E1 /*{$$ = makeTree($2, 2, $1, $3);}*/
+E0 : E0 AND E1 /*{$$ = makeTree($2, 2, $1, $3);}*/
 	| E0 ADD E1 /*{$$ = makeTree(Eadd, 2, $1, $3);}*/
 	| E0 SUB E1 /*{$$ = makeTree(Eminus, 2, $1, $3);}*/
 	| E1 /*{$$ = $1;}*/
@@ -203,13 +197,9 @@ E2 : ADD E3 /*{$$ = makeTree(Eadd, 1, $2);}*/
 	| E3
 ;
 
-E3 : CST                /*{ $$ = makeLeafInt(CONST, $1);}*/
-	| IDVAR             /*{$$ = makeLeafStr(EIDVAR, $1);}*/ 
-	| '(' Expression ')'/*{$$ = $2;}*/
-	| Identificateur    /*{$$ = $1;}*/
-	| Cast              /*{$$ = makeTree(Ecast, 1, $1);}*/
-	| Instanciation     /*{$$ = makeTree(Einstan, 1, $1);}*/
-	| Message
+E3 :  
+    Instanciation     /*{$$ = makeTree(Einstan, 1, $1);}*/
+    | Message   // TODO
 ;
 
 Identificateur : THIS   /*{$$ = makeLeafStr(ETHIS, $1);}*/
@@ -235,6 +225,18 @@ ListeArg : Arg ',' ListeArg /*{$$ = makeTree(Earg, 2, $1, $3);}*/
 Arg : Expression            /*{$$ = $1;}*/
 ;
 
-Message : E3 '.' IDVAR  '(' ListeArgOpt ')'   /* {$$ = makeTree(Emessage, 3, $1, $3,$5);}*/
-    |   E3 '.' IDVAR                          /* { $$ = makeTree(Eselect, 2, $1, $3);}*/
+Message : Message '.' IDVAR  '(' ListeArgOpt ')'   /* {$$ = makeTree(Emessage, 3, $1, $3,$5);}*/
+    |IDCLASS '.' IDVAR  '(' ListeArgOpt ')'
+    | Cible
 ;
+
+
+Cible : Message '.' IDVAR                          /* { $$ = makeTree(Eselect, 2, $1, $3);}*/
+    | IDVAR             /*{$$ = makeLeafStr(EIDVAR, $1);}*/ 
+    | Identificateur 
+    | CST                /*{ $$ = makeLeafInt(CONST, $1);}*/
+	| '(' Expression ')'/*{$$ = $2;}*/
+	| Cast                    //*{$$ = makeTree(Ecast, 1, $1);}*/
+    | STR
+;
+

@@ -4,11 +4,13 @@ LettreMin [a-z]
 LettreMaj [A-Z]
 Lettre {LettreMin}|{LettreMaj}
 LC {Lettre}|{Chiffre}
-Symbol [():,{};.]
+Symbol [():,{};.&]
 Star \*
 NotStar [^*]
 NotStarSlash [^*/]
-
+BS      \\.
+PasBSG [^\\"]
+IntString ({BS}|{PasBSG})*
 
 NomClasse {LettreMajLC*}
 Delim [ \n\r\t]
@@ -67,8 +69,9 @@ void lexError(char c) {
 ">="    { yylval.C = GE; return(RELOP); }
 "<"     { yylval.C = LT; return(RELOP); }
 "<="    { yylval.C = LE; return(RELOP); }
-"&"     { return(EAND); }
+"&"     { return(AND); }
 {Symbol} { return(yytext[0]); }
 "/*"({NotStar}|{Star}+{NotStarSlash})*{Star}*"*/" { }
+\"{IntString}\"     {yylval.S = strdup(yytext); return(STR);}
 .       { lexError(yytext[0]); /* raler, l'ignorer et continuer */ }
 
