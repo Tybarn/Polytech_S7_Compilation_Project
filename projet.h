@@ -63,6 +63,7 @@
 #define Echamp 34
 #define Eclass 35
 #define Eaxiome 36
+#define Ereturn 37
 
 typedef int bool;
 

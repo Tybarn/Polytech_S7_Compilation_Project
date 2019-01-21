@@ -46,134 +46,134 @@ extern void yyerror();  /* definie dans tp.c */
 
 /* -------------------------- AXIOME -------------------------- */
 
-S : LDeclCOOpt Bloc
+S : LDeclCOOpt Bloc         /*Ici on aura le genCode()*/
 ;
 
 /* -------------------------- PARTIE DECLARATION -------------------------- */
 
-LDeclCOOpt :  DeclClasse LDeclCOOpt
-	| DeclObject LDeclCOOpt
-	| 
+LDeclCOOpt :  DeclClasse LDeclCOOpt /*{$$ = makeTree(EDECL, 2, $1, $2);}*/
+	| DeclObject LDeclCOOpt         /*{$$ = makeTree(EDECL, 2, $1, $2);}*/
+	|                               /*{$$ = NIL(Tree);}*/
 ;
 
 /* -------------------------- DECLARATION CLASSE -------------------------- */
 
-DeclClasse : CLASS IDCLASS '(' LParamClasseOpt ')' EXTENDS TypeCO IS BlocDeclClasse
-    | CLASS IDCLASS '(' LParamClasseOpt ')' IS BlocDeclClasse//TODO
+DeclClasse : CLASS IDCLASS '(' LParamClasseOpt ')' EXTENDS TypeCO IS BlocDeclClasse /*{$$ = makeTree(Eclass, 4, $2, $4, $7,$9);}*/
+    | CLASS IDCLASS '(' LParamClasseOpt ')' IS BlocDeclClasse /*{$$ = makeTree(Eclass, 3, $2, $4, $7);}*/
 ;
 
-LParamClasseOpt : LParamClasse
-	   | 
+LParamClasseOpt : LParamClasse      /*{$$ = $1;}*/
+	   |                            /*{$$ = NIL(Tree);}*/
 ;
 
-LParamClasse : ParamClasse ',' LParamClasse
-	  | ParamClasse
+LParamClasse : ParamClasse ',' LParamClasse     /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
+	  | ParamClasse                             /*{$$ = $1;}*/
 ;
 
-ParamClasse : VAR IDVAR ':' TypeCO
-        | Param
+ParamClasse : VAR IDVAR ':' TypeCO      /*{$$ = makeTree(Eparam, 2, $2, $4);}*/
+        | Param                         /*{$$ = $1;}*/
 ;
 
-BlocDeclClasse : '{' LDeclChampOpt DefConstructClasse LDefMethodeOpt '}'
+BlocDeclClasse : '{' LDeclChampOpt DefConstructClasse LDefMethodeOpt '}'    /*{$$ = makeTree(Ebloc, 3, $2,$3,$4);}*/
 ;
 
-LDeclChampOpt : LDeclChamp
-    |
+LDeclChampOpt : LDeclChamp      /*{$$ = $1;}*/
+    |                           /*{$$ = NIL(Tree);}*/
 ;
 
-LDeclChamp :  DeclChamp LDeclChamp
-	| DeclChamp
+LDeclChamp :  DeclChamp LDeclChamp      /*{$$ = makeTree(Echamp, 2, $1, $2);}*/
+	| DeclChamp                         /*{$$ = $1;}*/
 ;
 
-DeclChamp : VAR IDVAR ':' TypeCO ';'
+DeclChamp : VAR IDVAR ':' TypeCO ';'    /*{$$ = makeTree(Echamp, 2, $2, $4);}*/
 ;
 
-DefConstructClasse : DEF IDCLASS '(' LParamClasseOpt ')' IS Bloc
-    | DEF IDCLASS '(' LParamClasseOpt ')' ':' IDCLASS '(' ListeArgOpt ')' IS Bloc
+DefConstructClasse : DEF IDCLASS '(' LParamClasseOpt ')' IS Bloc        /*{$$ = makeTree(Econstructor, 3, $2, $4, $6);}*/
+    | DEF IDCLASS '(' LParamClasseOpt ')' ':' IDCLASS '(' ListeArgOpt ')' IS Bloc   /*{$$ = makeTree(Econstructor, 5, $2, $4, $7, $9, $12);}*/
 ;
 
-LDefMethodeOpt : LDefMethode
-	|
+LDefMethodeOpt : LDefMethode    /*{$$ = $1;}*/
+	|                           /*{$$ = NIL(Tree);}*/
 ;
 
-LDefMethode : DefMethode LDefMethode
-	| DefMethode
+LDefMethode : DefMethode LDefMethode        /*{$$ = makeTree(Emeth, 2, $1, $2);}*/
+	| DefMethode                            /*{$$ = $1;}*/
 ;
 
-DefMethode : OVERRIDE DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression
-	| DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression
-	| OVERRIDE DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc
-	| DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc
+DefMethode : OVERRIDE DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression    /*{$$ = makeTree(Emeth, 4, $3, $5, $8, $10);}*/
+	| DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression                    /*{$$ = makeTree(Emeth, 4, $2, $4, $7, $9);}*/
+	| OVERRIDE DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc     /*{$$ = makeTree(Emeth, 4, $3, $5, $7, $9);}*/
+	| DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc              /*{$$ = makeTree(Emeth, 4, $2, $4, $6, $8);}*/
 ;
 
-NomClasseOpt:IDCLASS
-	|
+NomClasseOpt:IDCLASS         /*{$$ = makeLeafStr(EIDCLASS, $1);}*/
+|                           /*{$$ = NIL(Tree);}*/
 ;
 
-LParamOpt : LParam
-	|
+LParamOpt : LParam          /*{$$ = $1;}*/
+	|                       /*{$$ = NIL(Tree);}*/
 ;
 
-LParam : Param ',' LParam
-		| Param
+LParam : Param ',' LParam       /* {$$ = makeTree(Eparam, 2, $1, $3);}*/
+		| Param                 /*{$$ = $1;}*/
 ;
 
-Param : IDVAR ':' TypeCO
+Param : IDVAR ':' TypeCO    /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
 ;
 
 /* -------------------------- DECLARATION OBJECT -------------------------- */
 
-DeclObject : OBJECT IDCLASS IS BlocDeclObject
+DeclObject : OBJECT IDCLASS IS BlocDeclObject   /*{$$ = makeTree(EDeclObjet, 2, $2, $3);}*/
 ;
 
-BlocDeclObject : '{' LDeclChampOpt DefConstructObject LDefMethodeOpt '}'
+BlocDeclObject : '{' LDeclChampOpt DefConstructObject LDefMethodeOpt '}'    /*{$$ = makeTree(EBlocObjet, 3, $2, $3, $4);}*/
 ;
 
-DefConstructObject : DEF IDCLASS IS Bloc
+DefConstructObject : DEF IDCLASS IS Bloc    /*{$$ = makeTree(Eobjet, 2, $2, $4);}*/
 ;
 
 /* -------------------------- AUTRE --------------------------- */
 
-TypeCO : INTEGER
-	| STRING
-	| IDCLASS
+TypeCO : INTEGER    /*{$$ = makeLeafStr(Einteger, $1);} */
+	| STRING        /*{$$ = makeLeafStr(Estring, $1);} */
+	| IDCLASS       /*{$$ = makeLeafStr(EIDCLASS, $1);} */
 ;
 
 /* ------------------------- BLOC --------------------------- */ 
 
-Bloc: '{' ContenueBloc '}'
+Bloc: '{' ContenueBloc '}'      /*{$$ = $1;}*/
 ;
 
-ContenueBloc : ListeDecl IS ListeInstr 
-	| ListeInstrOpt
+ContenueBloc : ListeDecl IS ListeInstr  /*{$$ = makeTree(Ebloc, 2, $1, $3);}*/
+	| ListeInstrOpt                     /*{$$ = $1;}*/
 ;
 
 /* ------------------------ INSTRUCTIONS -------------------------- */
 
-ListeInstrOpt : ListeInstr
-	|
+ListeInstrOpt : ListeInstr      /*{$$ = $1;}*/
+	|                           /*{$$ = NIL(Tree);}*/
 ;
 
-ListeInstr: Instr ListeInstr
-	|Instr
+ListeInstr: Instr ListeInstr    /*{$$ = makeTree(Einstruct, 2, $1, $2);}*/
+|Instr                          /*{$$ = $1;}*/
 ;
 
-Instr : Expression ';'
-    |   Bloc
-    |   RETURN ';'
-    |   IDVAR AFF Expression';'
-    |   IF Expression THEN '{' ListeInstrOpt '}' ELSE '{' ListeInstrOpt '}'
+Instr : Expression ';'      /*{$$ = $1;}*/
+    |   Bloc                /*{$$ = $1;}*/
+    |   RETURN ';'          /*{$$ = makeLeafStr(Ereturn, $1);}*/
+    |   IDVAR AFF Expression';' /*{$$ = makeTree(AFFECT,2,$1,$3);}*/
+    |   IF Expression THEN '{' ListeInstrOpt '}' ELSE '{' ListeInstrOpt '}' /*{$$ = makeTree(ITE,3,$2,$5,$9);}*/
 ;
 
 /* ------------------------ DECLARATION DANS BLOC ------------------------- */
 
-ListeDecl : Decl ListeDeclOpt /*{$$ = makeTree(DECL, 2, $1, $2);}*/
+ListeDecl : Decl ListeDeclOpt /*{$$ = makeTree(EDECL, 2, $1, $2);}*/
 ;
 
-Decl : IDVAR ':' IDCLASS InitOpt ';' /*{$$ = makeTree(DECL, 3, $1, $3, $4);}*/
+Decl : IDVAR ':' IDCLASS InitOpt ';' /*{$$ = makeTree(EDECL, 3, $1, $3, $4);}*/
 ;
 
-InitOpt : AFF Expression   /*{$$ = makeTree(AFF,1,$2);}*/
+InitOpt : AFF Expression   /*{$$ = makeTree(AFFECT,1,$2);}*/
 	|
 ;
 
@@ -204,7 +204,7 @@ E2 : ADD E3 /*{$$ = makeTree(Eadd, 1, $2);}*/
 ;
 
 E3 : CST                /*{ $$ = makeLeafInt(CONST, $1);}*/
-	| IDVAR             /*{$$ = makeLeafStr(IDVAR, $1);}*/ 
+	| IDVAR             /*{$$ = makeLeafStr(EIDVAR, $1);}*/ 
 	| '(' Expression ')'/*{$$ = $2;}*/
 	| Identificateur    /*{$$ = $1;}*/
 	| Cast              /*{$$ = makeTree(Ecast, 1, $1);}*/
