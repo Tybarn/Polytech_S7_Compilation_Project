@@ -57,16 +57,23 @@
 #define Eobjet 28
 #define EBlocObjet 29
 #define EDeclObjet 30
-#define Eparam 31
 #define Emeth 32
 #define Econstructor 33
-#define Echamp 34
 #define Eclass 35
 #define Eaxiome 36
 #define Ereturn 37
 #define ETHIS 38
 #define ESUPER 39
 #define ERESULT 40
+#define Eparam1 41
+#define Eparam2 42
+#define Eparam3 43
+#define Emeth1 44
+#define Emeth2 45
+#define Emeth3 46
+#define Emeth4 47
+#define Echamp1 48
+#define Echamp2 49
 
 typedef int bool;
 
