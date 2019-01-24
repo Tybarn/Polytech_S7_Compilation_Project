@@ -67,11 +67,11 @@ LParamClasseOpt : LParamClasse      /*{$$ = $1;}*/
 	   |                            /*{$$ = NIL(Tree);}*/
 ;
 
-LParamClasse : ParamClasse ',' LParamClasse     /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
+LParamClasse : ParamClasse ',' LParamClasse     /*{$$ = makeTree(Eparam1, 2, $1, $3);} modif */
 	  | ParamClasse                             /*{$$ = $1;}*/
 ;
 
-ParamClasse : VAR IDVAR ':' IDCLASS      /*{$$ = makeTree(Eparam, 2, $2, $4);}*/
+ParamClasse : VAR IDVAR ':' IDCLASS      /*{$$ = makeTree(Eparam2, 2, $2, $4);} modif*/
         | Param                         /*{$$ = $1;}*/
 ;
 
@@ -82,11 +82,11 @@ LDeclChampOpt : LDeclChamp      /*{$$ = $1;}*/
     |                           /*{$$ = NIL(Tree);}*/
 ;
 
-LDeclChamp :  DeclChamp LDeclChamp      /*{$$ = makeTree(Echamp, 2, $1, $2);}*/
+LDeclChamp :  DeclChamp LDeclChamp      /*{$$ = makeTree(Echamp1, 2, $1, $2);} modif*/
 	| DeclChamp                         /*{$$ = $1;}*/
 ;
 
-DeclChamp : VAR IDVAR ':' IDCLASS ';'    /*{$$ = makeTree(Echamp, 2, $2, $4);}*/
+DeclChamp : VAR IDVAR ':' IDCLASS ';'    /*{$$ = makeTree(Echamp2, 2, $2, $4);} modif*/
 ;
 
 DefConstructClasse : DEF IDCLASS '(' LParamClasseOpt ')' IS Bloc        /*{$$ = makeTree(Econstructor, 3, $2, $4, $6);}*/
@@ -101,10 +101,11 @@ LDefMethode : DefMethode LDefMethode        /*{$$ = makeTree(Emeth, 2, $1, $2);}
 	| DefMethode                            /*{$$ = $1;}*/
 ;
 
-DefMethode : OVERRIDE DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression    /*{$$ = makeTree(Emeth, 4, $3, $5, $8, $10);}*/
-	| DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression                    /*{$$ = makeTree(Emeth, 4, $2, $4, $7, $9);}*/
-	| OVERRIDE DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc     /*{$$ = makeTree(Emeth, 4, $3, $5, $7, $9);}*/
-	| DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc              /*{$$ = makeTree(Emeth, 4, $2, $4, $6, $8);}*/
+/* modif Emetod à Emeth{1-4} */
+DefMethode : OVERRIDE DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression    /*{$$ = makeTree(Emeth1, 4, $3, $5, $8, $10);}*/
+	| DEF IDVAR '(' LParamOpt ')' ':' IDCLASS AFF Expression                    /*{$$ = makeTree(Emeth2, 4, $2, $4, $7, $9);}*/
+	| OVERRIDE DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc     /*{$$ = makeTree(Emeth3, 4, $3, $5, $7, $9);}*/
+	| DEF IDVAR '(' LParamOpt ')' NomClasseOpt IS Bloc              /*{$$ = makeTree(Emeth4, 4, $2, $4, $6, $8);}*/
 ;
 
 NomClasseOpt: ':' IDCLASS         /*{$$ = makeLeafStr(EIDCLASS, $1);}*/
@@ -115,11 +116,11 @@ LParamOpt : LParam          /*{$$ = $1;}*/
 	|                       /*{$$ = NIL(Tree);}*/
 ;
 
-LParam : Param ',' LParam       /* {$$ = makeTree(Eparam, 2, $1, $3);}*/
+LParam : Param ',' LParam       /* {$$ = makeTree(Eparam1, 2, $1, $3);}*/ /*modif pas sur*/
 		| Param                 /*{$$ = $1;}*/
 ;
 
-Param : IDVAR ':' IDCLASS    /*{$$ = makeTree(Eparam, 2, $1, $3);}*/
+Param : IDVAR ':' IDCLASS    /*{$$ = makeTree(Eparam3, 2, $1, $3);}*/
 ;
 
 /* -------------------------- DECLARATION OBJECT -------------------------- */
@@ -194,12 +195,12 @@ E1 : E1 MUL E2 /*{$$ = makeTree(Emult, 2, $1, $3);}*/
 
 E2 : ADD E3 /*{$$ = makeTree(Eadd, 1, $2);}*/
 	| SUB E3 /*{$$ = makeTree(Eminus, 1, $2);}*/
-	| E3
+	| E3	 /* $$ = $1 modif */
 ;
 
 E3 :  
     Instanciation     /*{$$ = makeTree(Einstan, 1, $1);}*/
-    | Message   // TODO
+    | Message // TODO /*{$$ = makeTree(Emessage, 1, $1)} modif */
 ;
 
 Identificateur : THIS   /*{$$ = makeLeafStr(ETHIS, $1);}*/
@@ -226,8 +227,8 @@ Arg : Expression            /*{$$ = $1;}*/
 ;
 
 Message : Message '.' IDVAR  '(' ListeArgOpt ')'   /* {$$ = makeTree(Emessage, 3, $1, $3,$5);}*/
-    |IDCLASS '.' IDVAR  '(' ListeArgOpt ')'
-    | Cible
+    |IDCLASS '.' IDVAR  '(' ListeArgOpt ')'	   /* {$$ = makeTree(Emessage, 3, $1, $3,$5);} modif*/
+    | Cible					   /* {$$ = $1} modif*/
 ;
 
 
@@ -237,6 +238,6 @@ Cible : Message '.' IDVAR                          /* { $$ = makeTree(Eselect, 2
     | CST                /*{ $$ = makeLeafInt(CONST, $1);}*/
 	| '(' Expression ')'/*{$$ = $2;}*/
 	| Cast                    //*{$$ = makeTree(Ecast, 1, $1);}*/
-    | STR
+    | STR			  /* {$$ = makeLeafStr()} modif*/
 ;
 
