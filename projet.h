@@ -49,7 +49,7 @@
 #define Einstan 20
 #define Einstruct 21
 #define Eselect 22
-#define Emessage 23
+#define Emessage1 23
 #define Earg 24
 #define Ebloc 25
 #define Estring 26
@@ -74,10 +74,11 @@
 #define Emeth4 47
 #define Echamp1 48
 #define Echamp2 49
+#define Emessage2 50
 
 typedef int bool;
 
-typedef struct _class;		/* structure de la classe */
+struct _class;		/* structure de la classe */
 
 /* la structure d'un arbre (noeud ou feuille) */
 typedef struct _Tree {
@@ -143,6 +144,7 @@ typedef union
   char *S;	/* IDVAR = chaine de caractere */
   char *V; /*IDCLASS = chaine de caractere*/
   int I;	/* CST = valeur entiere */
+  char *U; /*STR = valeur d'un string*/
   VarDeclP D;	/* liste de paires (variable, valeur) */
   TreeP T;	/* AST */
 } YYSTYPE;
@@ -158,4 +160,5 @@ TreeP makeTree(short op, int nbChildren, ...);	    /* noeud interne */
 
 /* Impression des AST */
 void printAST(TreeP decls, TreeP main);
+void printExpr(TreeP tree);
 #endif

@@ -173,7 +173,6 @@ VarDeclP addToScope(VarDeclP list, VarDeclP nouv) {
       break;
     }
   }
-
   nouv->rank = i; nouv->next=list;
   return nouv;
 }
@@ -596,17 +595,13 @@ TreeP initOpt(ClassP type, bool isAff, ...){
         
   }
   return eval()
-
     }
-
 TreeP evalDef(ClassP type, bool isExpr, ...){
   if(isExpr)
     return makeTree(op, nbChil, ...);
   else
     return NIL(Tree);
 }
-
-
 VarDeclP declVar(char *name, ClassP type)
 {
       
@@ -657,6 +652,8 @@ void printAST(TreeP decls, TreeP main) {
 
 
 void printExpr(TreeP tree) {
+    if(tree == NIL(Tree))
+        return;
   switch (tree->op) {
   case EIDVAR :
     printf("%s", tree->u.str); break;
@@ -738,12 +735,12 @@ void printExpr(TreeP tree) {
         printExpr(getChild(tree, 1));
     }
     else{
-        printExpr(getChild(tree, 0));
+        printf("%s", getChild(tree,0)->u.str);
         printf(":"); 
-        printExpr(getChild(tree, 1));
+        printf("%s", getChild(tree,1)->u.str);
         printExpr(getChild(tree, 2));
     }
-    break;  
+    break;
   case EIDCLASS :
     printf("%s", tree->u.str);
     break;
@@ -780,10 +777,26 @@ void printExpr(TreeP tree) {
     printf("."); 
     printExpr(getChild(tree, 1));
     break;
-  case Emessage: 
-    printExpr(getChild(tree, 0));
+  case Emessage1:
+    if(tree->nbChildren == 3){
+        printExpr(getChild(tree, 0));
+        printf("."); 
+        printf("%s", getChild(tree,1)->u.str);
+        printf("("); 
+        printExpr(getChild(tree, 2));
+        printf(")"); 
+        break;
+   }
+   else {
+        printExpr(getChild(tree, 0));
+        printf("."); 
+        printf("%s", getChild(tree,1)->u.str);
+        break;
+   }
+  case Emessage2: 
+    printf("%s", getChild(tree,0)->u.str);
     printf("."); 
-    printExpr(getChild(tree, 1));
+    printf("%s", getChild(tree,1)->u.str);
     printf("("); 
     printExpr(getChild(tree, 2));
     printf(")"); 
@@ -933,6 +946,12 @@ void printExpr(TreeP tree) {
         printExpr(getChild(tree, 1));
         printf(") is ");
         printExpr(getChild(tree, 2));
+  case EAND:
+    printExpr(getChild(tree, 0));
+    printf(" AND "); 
+    printExpr(getChild(tree, 1));
+
+    break;
     }
     else{
         printf("class "); 
@@ -945,8 +964,12 @@ void printExpr(TreeP tree) {
         printExpr(getChild(tree, 3));
     }
     break;
+  case ETHIS: printf("this"); break;
+  case ESUPER: printf("super"); break;
+  case ERESULT: printf("result"); break;
+  case Ereturn : printf("return ; "); break;
   default:
     fprintf(stderr, "Erreur! etiquette indefinie: %d\n", tree->op);
-    exit(UNEXPECTED);
+    abort();
   }
 }
